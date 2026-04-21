@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>退店報告</title>
+<style>
+  :root {
+    --bg: #0f0f12;
+    --surface: #1a1a20;
+    --surface2: #22222a;
+    --border: #2e2e3a;
+    --accent: #4f8ef7;
+    --accent2: #7c5cbf;
+    --text: #e8e8f0;
+    --text2: #8888a0;
+    --success: #3ecf8e;
+    --radius: 14px;
+    --font: 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    min-height: 100dvh;
+    overflow-x: hidden;
+  }
+  .header {
+    background: linear-gradient(135deg, #1a1a28 0%, #12121e 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 20px 16px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 4px;
+  }
+  .header h1 {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .day-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 4px 8px 4px 12px;
+    font-size: 12px;
+    color: var(--text2);
+    font-weight: 600;
+  }
+  .day-edit-btn {
+    background: var(--border);
+    border: none;
+    border-radius: 50%;
+    width: 18px; height: 18px;
+    color: var(--text2);
+    font-size: 11px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font);
+    flex-shrink: 0;
+  }
+  .date-line { font-size: 12px; color: var(--text2); }
+  .main {
+    padding: 16px 16px 120px;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  .section {
+    margin-bottom: 12px;
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .section-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px 8px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--text2);
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-label .num {
+    width: 18px; height: 18px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; color: white; font-weight: 700; flex-shrink: 0;
+  }
+  .field-row {
+    display: flex; align-items: center;
+    padding: 0 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .field-row:last-child { border-bottom: none; }
+  input[type="text"], input[type="number"], textarea, select {
+    background: transparent; border: none; outline: none;
+    color: var(--text); font-family: var(--font);
+    font-size: 15px; width: 100%; padding: 12px 0;
+    -webkit-appearance: none;
+  }
+  input[type="number"] { -moz-appearance: textfield; }
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+  textarea {
+    resize: none; line-height: 1.6;
+    padding: 12px 14px; min-height: 80px;
+    font-size: 14px; display: block; width: 100%;
+  }
+  .count-row { display: flex; }
+  .count-field {
+    flex: 1; display: flex; align-items: center;
+    padding: 0 14px; border-right: 1px solid var(--border);
+  }
+  .count-field:last-child { border-right: none; }
+  .count-label { font-size: 11px; color: var(--text2); margin-right: 8px; white-space: nowrap; }
+  .count-input {
+    width: 40px !important; text-align: center;
+    font-size: 22px !important; font-weight: 700;
+    color: var(--accent) !important; padding: 10px 0 !important;
+  }
+  .store-select {
+    background: transparent; border: none; outline: none;
+    color: var(--text); font-family: var(--font);
+    font-size: 15px; width: 100%; padding: 12px 0;
+    cursor: pointer; -webkit-appearance: none; appearance: none;
+  }
+  .select-wrap { position: relative; flex: 1; }
+  .select-wrap::after {
+    content: '›'; position: absolute; right: 0; top: 50%;
+    transform: translateY(-50%) rotate(90deg);
+    color: var(--text2); font-size: 18px; pointer-events: none;
+  }
+  .bottom-bar {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    padding: 12px 16px;
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+    background: linear-gradient(to top, var(--bg) 60%, transparent);
+    display: flex; gap: 10px;
+    max-width: 600px; margin: 0 auto;
+  }
+  .btn {
+    flex: 1; padding: 16px; border-radius: var(--radius);
+    border: none; font-family: var(--font);
+    font-size: 15px; font-weight: 700; cursor: pointer;
+    transition: all 0.15s; letter-spacing: 0.03em;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: white; box-shadow: 0 4px 20px rgba(79,142,247,0.3);
+  }
+  .btn-primary:active { transform: scale(0.97); opacity: 0.9; }
+  .btn-reset {
+    background: var(--surface2); border: 1px solid var(--border);
+    color: var(--text2); flex: 0 0 auto; padding: 16px 20px;
+  }
+  .btn-reset:active { transform: scale(0.97); }
+
+  /* 日数編集モーダル */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.6); z-index: 300;
+    align-items: center; justify-content: center;
+    backdrop-filter: blur(4px);
+  }
+  .modal-overlay.show { display: flex; }
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    width: calc(100% - 48px);
+    max-width: 320px;
+  }
+  .modal h3 {
+    font-size: 15px; font-weight: 700;
+    margin-bottom: 16px; color: var(--text);
+  }
+  .modal-input-row {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 20px;
+  }
+  .modal-input-row label { font-size: 13px; color: var(--text2); white-space: nowrap; }
+  .modal-num-input {
+    background: var(--surface2) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 8px !important;
+    padding: 10px 14px !important;
+    font-size: 20px !important;
+    font-weight: 700 !important;
+    color: var(--accent) !important;
+    text-align: center;
+    width: 80px !important;
+  }
+  .modal-btns { display: flex; gap: 8px; }
+  .modal-btn {
+    flex: 1; padding: 12px; border-radius: 10px;
+    border: none; font-family: var(--font);
+    font-size: 14px; font-weight: 700; cursor: pointer;
+  }
+  .modal-btn-cancel {
+    background: var(--surface2); border: 1px solid var(--border);
+    color: var(--text2);
+  }
+  .modal-btn-ok {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: white;
+  }
+
+  /* 結果画面 */
+  .result-screen {
+    display: none; position: fixed; inset: 0;
+    background: var(--bg); z-index: 200; overflow-y: auto;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .result-screen.show { display: block; }
+  .result-header {
+    background: var(--surface); border-bottom: 1px solid var(--border);
+    padding: 20px 16px 16px; position: sticky; top: 0;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .result-header h2 {
+    font-size: 16px; font-weight: 700;
+    background: linear-gradient(90deg, var(--success), var(--accent));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .back-btn {
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 20px; padding: 6px 14px;
+    font-size: 13px; color: var(--text2);
+    cursor: pointer; font-family: var(--font);
+  }
+  .result-body { padding: 16px 16px 100px; max-width: 600px; margin: 0 auto; }
+  .report-box {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 16px;
+    font-size: 14px; line-height: 1.8;
+    white-space: pre-wrap; color: var(--text); word-break: break-all;
+  }
+  .share-bar {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    padding: 12px 16px;
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+    background: linear-gradient(to top, var(--bg) 60%, transparent);
+    display: flex; gap: 10px;
+    max-width: 600px; margin: 0 auto;
+  }
+  .btn-share {
+    background: linear-gradient(135deg, #00c476, #00a86b);
+    color: white; box-shadow: 0 4px 20px rgba(0,196,118,0.3);
+  }
+  .btn-copy {
+    background: var(--surface2); border: 1px solid var(--border);
+    color: var(--text); flex: 0 0 auto; padding: 16px 20px;
+  }
+  .toast {
+    position: fixed; top: 20px; left: 50%;
+    transform: translateX(-50%) translateY(-80px);
+    background: var(--success); color: white;
+    padding: 10px 20px; border-radius: 20px;
+    font-size: 13px; font-weight: 600; z-index: 400;
+    transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    white-space: nowrap;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  option { background: #1a1a20; color: #e8e8f0; }
+  ::placeholder { color: var(--text2); opacity: 0.5; }
+  input:focus, textarea:focus, select:focus { outline: none; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <h1>退店報告</h1>
+    <div class="day-badge">
+      <span id="dayBadgeText">— 日目</span>
+      <button class="day-edit-btn" onclick="openDayModal()">✎</button>
+    </div>
+  </div>
+  <div class="date-line" id="dateLine">—</div>
+</div>
+
+<div class="main">
+
+  <div class="section">
+    <div class="section-label"><span class="num">1</span>稼働店舗</div>
+    <div class="field-row">
+      <div class="select-wrap">
+        <select class="store-select" id="store">
+          <option value="">選択してください</option>
+          <option value="沖浜店">沖浜店</option>
+          <option value="阿南店">阿南店</option>
+          <option value="藍住店">藍住店</option>
+          <option value="その他">その他</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label"><span class="num">2</span>成約 / スイング</div>
+    <div class="count-row">
+      <div class="count-field">
+        <span class="count-label">成約</span>
+        <input type="number" class="count-input" id="contracts" value="0" min="0">
+      </div>
+      <div class="count-field">
+        <span class="count-label">スイング</span>
+        <input type="number" class="count-input" id="swing" value="0" min="0">
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label"><span class="num">3</span>振り返り</div>
+    <textarea id="reflection" rows="4" placeholder="当日の行動全体・前日を踏まえて実施したことを簡潔に"></textarea>
+  </div>
+
+  <div class="section">
+    <div class="section-label"><span class="num">4</span>NG理由</div>
+    <textarea id="ngReason" rows="3" placeholder="成約がある場合は「なし」と入力"></textarea>
+  </div>
+
+  <div class="section">
+    <div class="section-label"><span class="num">5</span>成約要因</div>
+    <textarea id="successFactor" rows="3" placeholder="成約がある日のみ記入（0件の日は空欄可）"></textarea>
+  </div>
+
+  <div class="section">
+    <div class="section-label"><span class="num">6</span>改善</div>
+    <textarea id="improvement" rows="3" placeholder="実施結果の評価・次の改善案"></textarea>
+  </div>
+
+</div>
+
+<div class="bottom-bar">
+  <button class="btn btn-reset" onclick="resetForm()">リセット</button>
+  <button class="btn btn-primary" onclick="generateReport()">報告を作成</button>
+</div>
+
+<!-- 日数編集モーダル -->
+<div class="modal-overlay" id="dayModal">
+  <div class="modal">
+    <h3>稼働日数を変更</h3>
+    <div class="modal-input-row">
+      <label>日目</label>
+      <input type="number" class="modal-num-input" id="dayInput" min="1" max="31">
+    </div>
+    <div class="modal-btns">
+      <button class="modal-btn modal-btn-cancel" onclick="closeDayModal()">キャンセル</button>
+      <button class="modal-btn modal-btn-ok" onclick="saveDayFromModal()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- 結果画面 -->
+<div class="result-screen" id="resultScreen">
+  <div class="result-header">
+    <h2>退店報告 完成</h2>
+    <button class="back-btn" onclick="closeResult()">← 戻る</button>
+  </div>
+  <div class="result-body">
+    <div class="report-box" id="reportText"></div>
+  </div>
+  <div class="share-bar">
+    <button class="btn btn-copy" onclick="copyReport()">コピー</button>
+    <button class="btn btn-primary btn-share" onclick="shareReport()">LINEで共有</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const STORAGE_KEY = 'pikara_day_data';
+
+function getTodayStr() {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+
+function getJaDate() {
+  const d = new Date();
+  const days = ['日','月','火','水','木','金','土'];
+  return d.getFullYear() + '年' + (d.getMonth()+1) + '月' + d.getDate() + '日（' + days[d.getDay()] + '）';
+}
+
+function getDayCount() {
+  const today = getTodayStr();
+  const todayMonth = today.slice(0,7);
+  let data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+  if (!data.month || data.month !== todayMonth) {
+    data = { month: todayMonth, lastDate: null, count: 0 };
+  }
+  if (data.lastDate === today) return data.count;
+  return data.count + 1;
+}
+
+function saveDayCount(count) {
+  const today = getTodayStr();
+  const todayMonth = today.slice(0,7);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({ month: todayMonth, lastDate: today, count: count }));
+}
+
+let currentDayCount = 1;
+
+function initHeader() {
+  document.getElementById('dateLine').textContent = getJaDate();
+  currentDayCount = getDayCount();
+  document.getElementById('dayBadgeText').textContent = currentDayCount + '日目';
+}
+
+initHeader();
+
+// 日数モーダル
+function openDayModal() {
+  document.getElementById('dayInput').value = currentDayCount;
+  document.getElementById('dayModal').classList.add('show');
+}
+
+function closeDayModal() {
+  document.getElementById('dayModal').classList.remove('show');
+}
+
+function saveDayFromModal() {
+  const val = parseInt(document.getElementById('dayInput').value);
+  if (!val || val < 1 || val > 31) { showToast('1〜31の数字を入力してください'); return; }
+  currentDayCount = val;
+  saveDayCount(val);
+  document.getElementById('dayBadgeText').textContent = val + '日目';
+  closeDayModal();
+}
+
+// モーダル外タップで閉じる
+document.getElementById('dayModal').addEventListener('click', function(e) {
+  if (e.target === this) closeDayModal();
+});
+
+function resetForm() {
+  if (!confirm('入力内容をリセットしますか？')) return;
+  document.getElementById('store').value = '';
+  document.getElementById('contracts').value = '0';
+  document.getElementById('swing').value = '0';
+  document.getElementById('reflection').value = '';
+  document.getElementById('ngReason').value = '';
+  document.getElementById('successFactor').value = '';
+  document.getElementById('improvement').value = '';
+}
+
+function generateReport() {
+  const store = document.getElementById('store').value;
+  const contracts = parseInt(document.getElementById('contracts').value) || 0;
+  const swing = parseInt(document.getElementById('swing').value) || 0;
+  const reflection = document.getElementById('reflection').value.trim();
+  const ngReason = document.getElementById('ngReason').value.trim();
+  const successFactor = document.getElementById('successFactor').value.trim();
+  const improvement = document.getElementById('improvement').value.trim();
+
+  if (!store) { showToast('店舗を選択してください'); return; }
+  if (!reflection) { showToast('振り返りを入力してください'); return; }
+
+  const ngText = contracts > 0 ? 'なし' : (ngReason || 'なし');
+  const successText = contracts > 0 ? (successFactor || '（未記入）') : '';
+
+  let report = '【退店報告】竹口\n';
+  report += '稼働店舗：' + store + '（' + currentDayCount + '日目）\n\n';
+  report += '【結果】\n';
+  report += '・成約数：' + contracts + '件\n';
+  report += '・スイング成約：' + swing + '件\n\n';
+  report += '【振り返り】\n' + reflection + '\n\n';
+  report += '【NG理由】\n' + ngText + '\n';
+  if (contracts > 0) {
+    report += '\n【成約要因】\n' + successText + '\n';
+  }
+  report += '\n【改善】\n' + (improvement || '（未記入）');
+
+  document.getElementById('reportText').textContent = report;
+  document.getElementById('resultScreen').classList.add('show');
+  saveDayCount(currentDayCount);
+}
+
+function closeResult() {
+  document.getElementById('resultScreen').classList.remove('show');
+}
+
+function copyReport() {
+  const text = document.getElementById('reportText').textContent;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(() => showToast('コピーしました'));
+  } else {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    showToast('コピーしました');
+  }
+}
+
+function shareReport() {
+  const text = document.getElementById('reportText').textContent;
+  if (navigator.share) {
+    navigator.share({ text: text }).catch(() => {});
+  } else {
+    copyReport();
+  }
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+</script>
+</body>
+</html>
