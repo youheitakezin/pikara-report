@@ -4,19 +4,22 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>退店報告</title>
 <style>
   :root {
-    --bg: #0f0f12;
-    --surface: #1a1a20;
-    --surface2: #22222a;
-    --border: #2e2e3a;
-    --accent: #4f8ef7;
-    --accent2: #7c5cbf;
-    --text: #e8e8f0;
-    --text2: #8888a0;
-    --success: #3ecf8e;
+    --bg: #f4f6fb;
+    --surface: #ffffff;
+    --surface2: #eef0f6;
+    --border: #dde1ec;
+    --accent: #3a6ef5;
+    --accent2: #6c44c9;
+    --text: #1a1a2e;
+    --text2: #7a7a9a;
+    --success: #1faa70;
+    --yellow: #f59e0b;
+    --yellow-bg: #fffbeb;
+    --yellow-border: #fde68a;
     --radius: 14px;
     --font: 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', sans-serif;
   }
@@ -29,12 +32,13 @@
     overflow-x: hidden;
   }
   .header {
-    background: linear-gradient(135deg, #1a1a28 0%, #12121e 100%);
+    background: #ffffff;
     border-bottom: 1px solid var(--border);
     padding: 20px 20px 16px;
     position: sticky;
     top: 0;
     z-index: 100;
+    box-shadow: 0 1px 8px rgba(0,0,0,0.06);
   }
   .header-top {
     display: flex;
@@ -80,12 +84,54 @@
     max-width: 600px;
     margin: 0 auto;
   }
+
+  /* 前日の改善カード */
+  .prev-card {
+    display: none;
+    margin-bottom: 16px;
+    background: var(--yellow-bg);
+    border: 1px solid var(--yellow-border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  }
+  .prev-card.show { display: block; }
+  .prev-card-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--yellow-border);
+  }
+  .prev-card-icon { font-size: 14px; }
+  .prev-card-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--yellow);
+    text-transform: uppercase;
+    flex: 1;
+  }
+  .prev-card-date {
+    font-size: 11px;
+    color: var(--text2);
+  }
+  .prev-card-body {
+    padding: 12px 14px;
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text);
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+
   .section {
     margin-bottom: 12px;
     background: var(--surface);
     border-radius: var(--radius);
     border: 1px solid var(--border);
     overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
   }
   .section-label {
     display: flex;
@@ -98,6 +144,7 @@
     color: var(--text2);
     text-transform: uppercase;
     border-bottom: 1px solid var(--border);
+    background: #fafbff;
   }
   .section-label .num {
     width: 18px; height: 18px;
@@ -166,19 +213,17 @@
   }
   .btn-primary {
     background: linear-gradient(135deg, var(--accent), var(--accent2));
-    color: white; box-shadow: 0 4px 20px rgba(79,142,247,0.3);
+    color: white; box-shadow: 0 4px 20px rgba(58,110,245,0.25);
   }
   .btn-primary:active { transform: scale(0.97); opacity: 0.9; }
   .btn-reset {
-    background: var(--surface2); border: 1px solid var(--border);
+    background: var(--surface); border: 1px solid var(--border);
     color: var(--text2); flex: 0 0 auto; padding: 16px 20px;
   }
   .btn-reset:active { transform: scale(0.97); }
-
-  /* 日数編集モーダル */
   .modal-overlay {
     display: none; position: fixed; inset: 0;
-    background: rgba(0,0,0,0.6); z-index: 300;
+    background: rgba(0,0,0,0.3); z-index: 300;
     align-items: center; justify-content: center;
     backdrop-filter: blur(4px);
   }
@@ -190,11 +235,9 @@
     padding: 24px;
     width: calc(100% - 48px);
     max-width: 320px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.12);
   }
-  .modal h3 {
-    font-size: 15px; font-weight: 700;
-    margin-bottom: 16px; color: var(--text);
-  }
+  .modal h3 { font-size: 15px; font-weight: 700; margin-bottom: 16px; color: var(--text); }
   .modal-input-row {
     display: flex; align-items: center; gap: 12px;
     margin-bottom: 20px;
@@ -217,16 +260,8 @@
     border: none; font-family: var(--font);
     font-size: 14px; font-weight: 700; cursor: pointer;
   }
-  .modal-btn-cancel {
-    background: var(--surface2); border: 1px solid var(--border);
-    color: var(--text2);
-  }
-  .modal-btn-ok {
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    color: white;
-  }
-
-  /* 結果画面 */
+  .modal-btn-cancel { background: var(--surface2); border: 1px solid var(--border); color: var(--text2); }
+  .modal-btn-ok { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: white; }
   .result-screen {
     display: none; position: fixed; inset: 0;
     background: var(--bg); z-index: 200; overflow-y: auto;
@@ -237,6 +272,7 @@
     background: var(--surface); border-bottom: 1px solid var(--border);
     padding: 20px 16px 16px; position: sticky; top: 0;
     display: flex; align-items: center; justify-content: space-between;
+    box-shadow: 0 1px 8px rgba(0,0,0,0.06);
   }
   .result-header h2 {
     font-size: 16px; font-weight: 700;
@@ -255,6 +291,7 @@
     border-radius: var(--radius); padding: 16px;
     font-size: 14px; line-height: 1.8;
     white-space: pre-wrap; color: var(--text); word-break: break-all;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
   }
   .share-bar {
     position: fixed; bottom: 0; left: 0; right: 0;
@@ -265,11 +302,11 @@
     max-width: 600px; margin: 0 auto;
   }
   .btn-share {
-    background: linear-gradient(135deg, #00c476, #00a86b);
-    color: white; box-shadow: 0 4px 20px rgba(0,196,118,0.3);
+    background: linear-gradient(135deg, #06c755, #00a846);
+    color: white; box-shadow: 0 4px 20px rgba(6,199,85,0.25);
   }
   .btn-copy {
-    background: var(--surface2); border: 1px solid var(--border);
+    background: var(--surface); border: 1px solid var(--border);
     color: var(--text); flex: 0 0 auto; padding: 16px 20px;
   }
   .toast {
@@ -282,7 +319,7 @@
     white-space: nowrap;
   }
   .toast.show { transform: translateX(-50%) translateY(0); }
-  option { background: #1a1a20; color: #e8e8f0; }
+  option { background: #ffffff; color: #1a1a2e; }
   ::placeholder { color: var(--text2); opacity: 0.5; }
   input:focus, textarea:focus, select:focus { outline: none; }
 </style>
@@ -301,6 +338,16 @@
 </div>
 
 <div class="main">
+
+  <!-- 前日の改善カード -->
+  <div class="prev-card" id="prevCard">
+    <div class="prev-card-header">
+      <span class="prev-card-icon">📌</span>
+      <span class="prev-card-title">前日の改善（次やること）</span>
+      <span class="prev-card-date" id="prevCardDate"></span>
+    </div>
+    <div class="prev-card-body" id="prevCardBody"></div>
+  </div>
 
   <div class="section">
     <div class="section-label"><span class="num">1</span>稼働店舗</div>
@@ -332,7 +379,7 @@
   </div>
 
   <div class="section">
-    <div class="section-label"><span class="num">3</span>振り返り</div>
+    <div class="section-label"><span class="num">3</span>振り返り（事実）</div>
     <textarea id="reflection" rows="4" placeholder="当日の行動全体・前日を踏まえて実施したことを簡潔に"></textarea>
   </div>
 
@@ -347,7 +394,7 @@
   </div>
 
   <div class="section">
-    <div class="section-label"><span class="num">6</span>改善</div>
+    <div class="section-label"><span class="num">6</span>改善（次やること）</div>
     <textarea id="improvement" rows="3" placeholder="実施結果の評価・次の改善案"></textarea>
   </div>
 
@@ -358,7 +405,6 @@
   <button class="btn btn-primary" onclick="generateReport()">報告を作成</button>
 </div>
 
-<!-- 日数編集モーダル -->
 <div class="modal-overlay" id="dayModal">
   <div class="modal">
     <h3>稼働日数を変更</h3>
@@ -373,7 +419,6 @@
   </div>
 </div>
 
-<!-- 結果画面 -->
 <div class="result-screen" id="resultScreen">
   <div class="result-header">
     <h2>退店報告 完成</h2>
@@ -392,6 +437,7 @@
 
 <script>
 const STORAGE_KEY = 'pikara_day_data';
+const PREV_KEY = 'pikara_prev_improvement';
 
 function getTodayStr() {
   const d = new Date();
@@ -421,6 +467,23 @@ function saveDayCount(count) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify({ month: todayMonth, lastDate: today, count: count }));
 }
 
+// 前日の改善を保存
+function savePrevImprovement(text, dateStr) {
+  localStorage.setItem(PREV_KEY, JSON.stringify({ text: text, date: dateStr }));
+}
+
+// 前日の改善を表示
+function loadPrevImprovement() {
+  const today = getTodayStr();
+  try {
+    const data = JSON.parse(localStorage.getItem(PREV_KEY) || 'null');
+    if (!data || !data.text || data.date === today) return;
+    document.getElementById('prevCardBody').textContent = data.text;
+    document.getElementById('prevCardDate').textContent = data.date.replace(/-/g, '/');
+    document.getElementById('prevCard').classList.add('show');
+  } catch(e) {}
+}
+
 let currentDayCount = 1;
 
 function initHeader() {
@@ -430,8 +493,8 @@ function initHeader() {
 }
 
 initHeader();
+loadPrevImprovement();
 
-// 日数モーダル
 function openDayModal() {
   document.getElementById('dayInput').value = currentDayCount;
   document.getElementById('dayModal').classList.add('show');
@@ -450,7 +513,6 @@ function saveDayFromModal() {
   closeDayModal();
 }
 
-// モーダル外タップで閉じる
 document.getElementById('dayModal').addEventListener('click', function(e) {
   if (e.target === this) closeDayModal();
 });
@@ -481,20 +543,32 @@ function generateReport() {
   const ngText = contracts > 0 ? 'なし' : (ngReason || 'なし');
   const successText = contracts > 0 ? (successFactor || '（未記入）') : '';
 
-  let report = '【退店報告】竹口\n';
-  report += '稼働店舗：' + store + '（' + currentDayCount + '日目）\n\n';
+  let report = 'お疲れ様です\n';
+  report += '退店報告：竹口\n';
+  report += '稼働店舗：' + store + '\n';
+  report += '稼働日数：' + currentDayCount + '日目\n';
   report += '【結果】\n';
-  report += '・成約数：' + contracts + '件\n';
-  report += '・スイング成約：' + swing + '件\n\n';
-  report += '【振り返り】\n' + reflection + '\n\n';
-  report += '【NG理由】\n' + ngText + '\n';
+  report += '・成約数：' + contracts + '\n';
+  report += '・スイング成約：' + swing + '\n';
+  report += '【振り返り（事実）】\n';
+  report += '・' + reflection + '\n';
+  report += '【NG理由】\n';
+  report += '・' + ngText + '\n';
   if (contracts > 0) {
-    report += '\n【成約要因】\n' + successText + '\n';
+    report += '【成約要因】\n';
+    report += '・' + successText + '\n';
   }
-  report += '\n【改善】\n' + (improvement || '（未記入）');
+  report += '【改善（次やること）】\n';
+  report += '・' + (improvement || '（未記入）') + '\n';
+  report += 'お疲れ様でした。';
 
   document.getElementById('reportText').textContent = report;
   document.getElementById('resultScreen').classList.add('show');
+
+  // 今日の改善を翌日用に保存
+  if (improvement) {
+    savePrevImprovement(improvement, getTodayStr());
+  }
   saveDayCount(currentDayCount);
 }
 
