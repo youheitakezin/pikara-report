@@ -5,23 +5,23 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="退店報告">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' fill='%23e8e4dc'/%3E%3Crect x='24' y='24' width='132' height='132' fill='none' stroke='%231c1814' stroke-width='6'/%3E%3Cline x1='24' y1='72' x2='156' y2='72' stroke='%231c1814' stroke-width='3'/%3E%3Cline x1='24' y1='108' x2='156' y2='108' stroke='%231c1814' stroke-width='3'/%3E%3Cline x1='72' y1='24' x2='72' y2='72' stroke='%231c1814' stroke-width='3'/%3E%3Ctext x='90' y='68' font-family='Georgia,serif' font-size='32' font-weight='700' fill='%231c1814' text-anchor='middle' dominant-baseline='middle'%3E退%3C/text%3E%3Ctext x='52' y='92' font-family='Georgia,serif' font-size='11' font-weight='700' fill='%237a7268' text-anchor='middle' letter-spacing='1'%3EREPORT%3C/text%3E%3Cline x1='40' y1='126' x2='140' y2='126' stroke='%231c1814' stroke-width='2'/%3E%3Cline x1='40' y1='136' x2='120' y2='136' stroke='%23b0a898' stroke-width='2'/%3E%3C/svg%3E">
 <title>退店報告</title>
 <style>
   :root {
-    --bg: #f4f6fb;
-    --surface: #ffffff;
-    --surface2: #eef0f6;
-    --border: #dde1ec;
-    --accent: #3a6ef5;
-    --accent2: #6c44c9;
-    --text: #1a1a2e;
-    --text2: #7a7a9a;
-    --success: #1faa70;
-    --yellow: #f59e0b;
-    --yellow-bg: #fffbeb;
-    --yellow-border: #fde68a;
-    --radius: 14px;
+    --bg: #e8e4dc;
+    --surface2: #dedad2;
+    --border: #c8c2b6;
+    --border-strong: #a09890;
+    --text: #1c1814;
+    --text2: #7a7268;
+    --text3: #b0a898;
+    --yellow: #7a5e0e;
+    --yellow-bg: #ede4c8;
+    --yellow-border: #c8a84a;
     --font: 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', sans-serif;
+    --font-serif: Georgia, 'Times New Roman', serif;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   body {
@@ -31,296 +31,255 @@
     min-height: 100dvh;
     overflow-x: hidden;
   }
+
+  /* ─── HEADER ─── */
   .header {
-    background: #ffffff;
-    border-bottom: 1px solid var(--border);
-    padding: 20px 20px 16px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+    padding: 52px 24px 18px;
+    border-bottom: 2px solid var(--text);
+    position: sticky; top: 0; z-index: 100;
+    background: var(--bg);
   }
   .header-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 4px;
+    display: flex; align-items: flex-end;
+    justify-content: space-between; margin-bottom: 8px;
   }
   .header h1 {
-    font-size: 18px;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    background: linear-gradient(90deg, var(--accent), var(--accent2));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    font-family: var(--font-serif);
+    font-size: 22px; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--text); line-height: 1;
   }
-  .day-badge {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 4px 8px 4px 12px;
-    font-size: 12px;
-    color: var(--text2);
-    font-weight: 600;
+  .day-area { display: flex; align-items: flex-end; gap: 5px; }
+  .day-num {
+    font-family: var(--font-serif);
+    font-size: 34px; font-weight: 700;
+    color: var(--text); letter-spacing: -0.02em; line-height: 1;
+  }
+  .day-unit {
+    font-size: 11px; color: var(--text2);
+    font-weight: 500; padding-bottom: 5px; letter-spacing: 0.08em;
   }
   .day-edit-btn {
-    background: var(--border);
-    border: none;
-    border-radius: 50%;
-    width: 18px; height: 18px;
-    color: var(--text2);
-    font-size: 11px;
-    cursor: pointer;
+    background: transparent; border: 1px solid var(--border-strong);
+    border-radius: 50%; width: 22px; height: 22px;
+    color: var(--text2); font-size: 11px; cursor: pointer;
     display: flex; align-items: center; justify-content: center;
-    font-family: var(--font);
-    flex-shrink: 0;
+    font-family: var(--font); margin-bottom: 4px;
   }
-  .date-line { font-size: 12px; color: var(--text2); }
-  .main {
-    padding: 16px 16px 120px;
-    max-width: 600px;
-    margin: 0 auto;
+  .date-line {
+    font-size: 11px; color: var(--text2);
+    letter-spacing: 0.12em; text-transform: uppercase;
   }
 
-  /* 前日の改善カード */
+  /* ─── MAIN ─── */
+  .main { padding: 0 0 140px; max-width: 560px; margin: 0 auto; }
+
+  /* 前日カード */
   .prev-card {
-    display: none;
-    margin-bottom: 16px;
-    background: var(--yellow-bg);
-    border: 1px solid var(--yellow-border);
-    border-radius: var(--radius);
-    overflow: hidden;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    display: none; background: var(--yellow-bg);
+    border-bottom: 1px solid var(--yellow-border);
   }
   .prev-card.show { display: block; }
   .prev-card-header {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 10px 14px;
-    border-bottom: 1px solid var(--yellow-border);
+    display: flex; align-items: center; gap: 8px;
+    padding: 11px 24px; border-bottom: 1px solid var(--yellow-border);
   }
-  .prev-card-icon { font-size: 14px; }
   .prev-card-title {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    color: var(--yellow);
-    text-transform: uppercase;
-    flex: 1;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--yellow); flex: 1;
   }
-  .prev-card-date {
-    font-size: 11px;
-    color: var(--text2);
-  }
+  .prev-card-date { font-size: 10px; color: var(--text2); }
   .prev-card-body {
-    padding: 12px 14px;
-    font-size: 14px;
-    line-height: 1.7;
-    color: var(--text);
-    white-space: pre-wrap;
-    word-break: break-all;
+    padding: 12px 24px 14px; font-size: 13px;
+    line-height: 1.8; color: var(--yellow);
+    white-space: pre-wrap; word-break: break-all;
   }
 
-  .section {
-    margin-bottom: 12px;
-    background: var(--surface);
-    border-radius: var(--radius);
-    border: 1px solid var(--border);
-    overflow: hidden;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-  }
+  /* セクション */
+  .section { border-bottom: 1px solid var(--border); }
   .section-label {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 14px 8px;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    color: var(--text2);
-    text-transform: uppercase;
-    border-bottom: 1px solid var(--border);
-    background: #fafbff;
+    display: flex; align-items: center; gap: 12px;
+    padding: 13px 24px 11px; border-bottom: 1px solid var(--border);
   }
   .section-label .num {
-    width: 18px; height: 18px;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 10px; color: white; font-weight: 700; flex-shrink: 0;
+    font-family: var(--font-serif); font-size: 11px;
+    font-weight: 700; color: var(--text3); width: 14px;
+  }
+  .section-label .label-text {
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.22em; text-transform: uppercase; color: var(--text2);
   }
   .field-row {
     display: flex; align-items: center;
-    padding: 0 14px;
-    border-bottom: 1px solid var(--border);
+    padding: 0 24px; border-bottom: 1px solid var(--border);
   }
   .field-row:last-child { border-bottom: none; }
+
   input[type="text"], input[type="number"], textarea, select {
     background: transparent; border: none; outline: none;
     color: var(--text); font-family: var(--font);
-    font-size: 15px; width: 100%; padding: 12px 0;
+    font-size: 15px; width: 100%; padding: 13px 0;
     -webkit-appearance: none;
   }
   input[type="number"] { -moz-appearance: textfield; }
   input[type="number"]::-webkit-inner-spin-button,
   input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
   textarea {
-    resize: none; line-height: 1.6;
-    padding: 12px 14px; min-height: 80px;
+    resize: none; line-height: 1.75;
+    padding: 14px 24px; min-height: 90px;
     font-size: 14px; display: block; width: 100%;
   }
+
+  /* 成約カウンター */
   .count-row { display: flex; }
   .count-field {
     flex: 1; display: flex; align-items: center;
-    padding: 0 14px; border-right: 1px solid var(--border);
+    padding: 0 24px; border-right: 1px solid var(--border);
   }
   .count-field:last-child { border-right: none; }
-  .count-label { font-size: 11px; color: var(--text2); margin-right: 8px; white-space: nowrap; }
-  .count-input {
-    width: 40px !important; text-align: center;
-    font-size: 22px !important; font-weight: 700;
-    color: var(--accent) !important; padding: 10px 0 !important;
+  .count-label {
+    font-size: 10px; color: var(--text2); margin-right: 12px;
+    white-space: nowrap; letter-spacing: 0.12em; text-transform: uppercase;
   }
+  .count-input {
+    width: 48px !important; text-align: center;
+    font-family: var(--font-serif) !important;
+    font-size: 32px !important; font-weight: 700;
+    color: var(--text) !important; padding: 14px 0 !important;
+  }
+
+  /* 店舗セレクト */
   .store-select {
     background: transparent; border: none; outline: none;
     color: var(--text); font-family: var(--font);
-    font-size: 15px; width: 100%; padding: 12px 0;
+    font-size: 15px; width: 100%; padding: 13px 0;
     cursor: pointer; -webkit-appearance: none; appearance: none;
   }
   .select-wrap { position: relative; flex: 1; }
   .select-wrap::after {
     content: '›'; position: absolute; right: 0; top: 50%;
     transform: translateY(-50%) rotate(90deg);
-    color: var(--text2); font-size: 18px; pointer-events: none;
+    color: var(--text2); font-size: 20px; pointer-events: none;
   }
+  option { background: #e8e4dc; color: #1c1814; }
+
+  /* ボトムバー */
   .bottom-bar {
     position: fixed; bottom: 0; left: 0; right: 0;
-    padding: 12px 16px;
-    padding-bottom: max(12px, env(safe-area-inset-bottom));
-    background: linear-gradient(to top, var(--bg) 60%, transparent);
-    display: flex; gap: 10px;
-    max-width: 600px; margin: 0 auto;
+    padding-bottom: env(safe-area-inset-bottom);
+    display: flex; max-width: 560px; margin: 0 auto;
+    border-top: 2px solid var(--text); background: var(--bg);
   }
   .btn {
-    flex: 1; padding: 16px; border-radius: var(--radius);
-    border: none; font-family: var(--font);
-    font-size: 15px; font-weight: 700; cursor: pointer;
-    transition: all 0.15s; letter-spacing: 0.03em;
+    flex: 1; padding: 20px; border: none;
+    font-family: var(--font); font-size: 13px; font-weight: 700;
+    cursor: pointer; transition: opacity 0.12s, background 0.12s;
+    letter-spacing: 0.18em; text-transform: uppercase;
   }
-  .btn-primary {
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    color: white; box-shadow: 0 4px 20px rgba(58,110,245,0.25);
-  }
-  .btn-primary:active { transform: scale(0.97); opacity: 0.9; }
+  .btn-primary { background: var(--text); color: var(--bg); }
+  .btn-primary:active { opacity: 0.75; }
   .btn-reset {
-    background: var(--surface); border: 1px solid var(--border);
-    color: var(--text2); flex: 0 0 auto; padding: 16px 20px;
+    background: transparent; border-right: 1px solid var(--border-strong);
+    color: var(--text2); flex: 0 0 auto; padding: 20px 24px; font-size: 12px;
   }
-  .btn-reset:active { transform: scale(0.97); }
+  .btn-reset:active { background: var(--surface2); }
+
+  /* モーダル */
   .modal-overlay {
     display: none; position: fixed; inset: 0;
-    background: rgba(0,0,0,0.3); z-index: 300;
+    background: rgba(28,24,20,0.5); z-index: 300;
     align-items: center; justify-content: center;
-    backdrop-filter: blur(4px);
+    backdrop-filter: blur(6px);
   }
   .modal-overlay.show { display: flex; }
   .modal {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 24px;
-    width: calc(100% - 48px);
-    max-width: 320px;
-    box-shadow: 0 8px 40px rgba(0,0,0,0.12);
+    background: var(--bg); border: 2px solid var(--text);
+    padding: 28px; width: calc(100% - 48px); max-width: 300px;
   }
-  .modal h3 { font-size: 15px; font-weight: 700; margin-bottom: 16px; color: var(--text); }
+  .modal h3 {
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--text2); margin-bottom: 24px;
+  }
   .modal-input-row {
-    display: flex; align-items: center; gap: 12px;
-    margin-bottom: 20px;
+    display: flex; align-items: center; gap: 14px; margin-bottom: 24px;
   }
-  .modal-input-row label { font-size: 13px; color: var(--text2); white-space: nowrap; }
+  .modal-input-row label {
+    font-size: 11px; color: var(--text2);
+    white-space: nowrap; letter-spacing: 0.1em; text-transform: uppercase;
+  }
   .modal-num-input {
     background: var(--surface2) !important;
-    border: 1px solid var(--border) !important;
-    border-radius: 8px !important;
+    border: 1px solid var(--border-strong) !important;
     padding: 10px 14px !important;
-    font-size: 20px !important;
-    font-weight: 700 !important;
-    color: var(--accent) !important;
-    text-align: center;
-    width: 80px !important;
+    font-family: var(--font-serif) !important;
+    font-size: 26px !important; font-weight: 700 !important;
+    color: var(--text) !important; text-align: center; width: 80px !important;
   }
-  .modal-btns { display: flex; gap: 8px; }
+  .modal-btns { display: flex; border: 1px solid var(--text); }
   .modal-btn {
-    flex: 1; padding: 12px; border-radius: 10px;
-    border: none; font-family: var(--font);
-    font-size: 14px; font-weight: 700; cursor: pointer;
+    flex: 1; padding: 14px; border: none; font-family: var(--font);
+    font-size: 12px; font-weight: 700; cursor: pointer;
+    letter-spacing: 0.14em; text-transform: uppercase;
   }
-  .modal-btn-cancel { background: var(--surface2); border: 1px solid var(--border); color: var(--text2); }
-  .modal-btn-ok { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: white; }
+  .modal-btn-cancel {
+    background: transparent; color: var(--text2);
+    border-right: 1px solid var(--text);
+  }
+  .modal-btn-ok { background: var(--text); color: var(--bg); }
+
+  /* 結果画面 */
   .result-screen {
     display: none; position: fixed; inset: 0;
     background: var(--bg); z-index: 200; overflow-y: auto;
-    padding-bottom: env(safe-area-inset-bottom);
   }
   .result-screen.show { display: block; }
   .result-header {
-    background: var(--surface); border-bottom: 1px solid var(--border);
-    padding: 20px 16px 16px; position: sticky; top: 0;
-    display: flex; align-items: center; justify-content: space-between;
-    box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+    background: var(--bg); border-bottom: 2px solid var(--text);
+    padding: 52px 24px 18px; position: sticky; top: 0;
+    display: flex; align-items: flex-end; justify-content: space-between;
   }
   .result-header h2 {
-    font-size: 16px; font-weight: 700;
-    background: linear-gradient(90deg, var(--success), var(--accent));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    font-family: var(--font-serif); font-size: 20px; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase; color: var(--text);
   }
   .back-btn {
-    background: var(--surface2); border: 1px solid var(--border);
-    border-radius: 20px; padding: 6px 14px;
-    font-size: 13px; color: var(--text2);
+    background: transparent; border: 1px solid var(--border-strong);
+    padding: 7px 16px; font-size: 11px; color: var(--text2);
     cursor: pointer; font-family: var(--font);
+    letter-spacing: 0.12em; text-transform: uppercase; font-weight: 600;
   }
-  .result-body { padding: 16px 16px 100px; max-width: 600px; margin: 0 auto; }
+  .result-body { padding: 0 0 120px; }
   .report-box {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 16px;
-    font-size: 14px; line-height: 1.8;
-    white-space: pre-wrap; color: var(--text); word-break: break-all;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    padding: 24px; font-size: 14px; line-height: 2;
+    white-space: pre-wrap; color: var(--text);
+    word-break: break-all; border-bottom: 1px solid var(--border);
   }
   .share-bar {
     position: fixed; bottom: 0; left: 0; right: 0;
-    padding: 12px 16px;
-    padding-bottom: max(12px, env(safe-area-inset-bottom));
-    background: linear-gradient(to top, var(--bg) 60%, transparent);
-    display: flex; gap: 10px;
-    max-width: 600px; margin: 0 auto;
-  }
-  .btn-share {
-    background: linear-gradient(135deg, #06c755, #00a846);
-    color: white; box-shadow: 0 4px 20px rgba(6,199,85,0.25);
+    padding-bottom: env(safe-area-inset-bottom);
+    display: flex; max-width: 560px; margin: 0 auto;
+    border-top: 2px solid var(--text); background: var(--bg);
   }
   .btn-copy {
-    background: var(--surface); border: 1px solid var(--border);
-    color: var(--text); flex: 0 0 auto; padding: 16px 20px;
+    background: transparent; border-right: 1px solid var(--border-strong);
+    color: var(--text2); flex: 0 0 auto; padding: 20px 24px; font-size: 12px;
   }
+
+  /* トースト */
   .toast {
     position: fixed; top: 20px; left: 50%;
     transform: translateX(-50%) translateY(-80px);
-    background: var(--success); color: white;
-    padding: 10px 20px; border-radius: 20px;
-    font-size: 13px; font-weight: 600; z-index: 400;
-    transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    background: var(--text); color: var(--bg);
+    padding: 10px 22px; font-size: 12px; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    z-index: 400;
+    transition: transform 0.28s cubic-bezier(0.34,1.56,0.64,1);
     white-space: nowrap;
   }
   .toast.show { transform: translateX(-50%) translateY(0); }
-  option { background: #ffffff; color: #1a1a2e; }
-  ::placeholder { color: var(--text2); opacity: 0.5; }
+  ::placeholder { color: var(--text3); }
   input:focus, textarea:focus, select:focus { outline: none; }
 </style>
 </head>
@@ -329,8 +288,9 @@
 <div class="header">
   <div class="header-top">
     <h1>退店報告</h1>
-    <div class="day-badge">
-      <span id="dayBadgeText">— 日目</span>
+    <div class="day-area">
+      <span class="day-num" id="dayBadgeText">—</span>
+      <span class="day-unit">日目</span>
       <button class="day-edit-btn" onclick="openDayModal()">✎</button>
     </div>
   </div>
@@ -339,22 +299,23 @@
 
 <div class="main">
 
-  <!-- 前日の改善カード -->
   <div class="prev-card" id="prevCard">
     <div class="prev-card-header">
-      <span class="prev-card-icon">📌</span>
-      <span class="prev-card-title">前日の改善（次やること）</span>
+      <span class="prev-card-title">前日の改善</span>
       <span class="prev-card-date" id="prevCardDate"></span>
     </div>
     <div class="prev-card-body" id="prevCardBody"></div>
   </div>
 
   <div class="section">
-    <div class="section-label"><span class="num">1</span>稼働店舗</div>
+    <div class="section-label">
+      <span class="num">I</span>
+      <span class="label-text">稼働店舗</span>
+    </div>
     <div class="field-row">
       <div class="select-wrap">
         <select class="store-select" id="store">
-          <option value="">選択してください</option>
+          <option value="">Select</option>
           <option value="沖浜店">沖浜店</option>
           <option value="阿南店">阿南店</option>
           <option value="藍住店">藍住店</option>
@@ -365,7 +326,10 @@
   </div>
 
   <div class="section">
-    <div class="section-label"><span class="num">2</span>成約 / スイング</div>
+    <div class="section-label">
+      <span class="num">II</span>
+      <span class="label-text">成約 / スイング</span>
+    </div>
     <div class="count-row">
       <div class="count-field">
         <span class="count-label">成約</span>
@@ -379,29 +343,41 @@
   </div>
 
   <div class="section">
-    <div class="section-label"><span class="num">3</span>振り返り（事実）</div>
+    <div class="section-label">
+      <span class="num">III</span>
+      <span class="label-text">振り返り（事実）</span>
+    </div>
     <textarea id="reflection" rows="4" placeholder="当日の行動全体・前日を踏まえて実施したことを簡潔に"></textarea>
   </div>
 
   <div class="section">
-    <div class="section-label"><span class="num">4</span>NG理由</div>
+    <div class="section-label">
+      <span class="num">IV</span>
+      <span class="label-text">NG理由</span>
+    </div>
     <textarea id="ngReason" rows="3" placeholder="成約がある場合は「なし」と入力"></textarea>
   </div>
 
   <div class="section">
-    <div class="section-label"><span class="num">5</span>成約要因</div>
+    <div class="section-label">
+      <span class="num">V</span>
+      <span class="label-text">成約要因</span>
+    </div>
     <textarea id="successFactor" rows="3" placeholder="成約がある日のみ記入（0件の日は空欄可）"></textarea>
   </div>
 
   <div class="section">
-    <div class="section-label"><span class="num">6</span>改善（次やること）</div>
+    <div class="section-label">
+      <span class="num">VI</span>
+      <span class="label-text">改善（次やること）</span>
+    </div>
     <textarea id="improvement" rows="3" placeholder="実施結果の評価・次の改善案"></textarea>
   </div>
 
 </div>
 
 <div class="bottom-bar">
-  <button class="btn btn-reset" onclick="resetForm()">リセット</button>
+  <button class="btn btn-reset" onclick="resetForm()">Reset</button>
   <button class="btn btn-primary" onclick="generateReport()">報告を作成</button>
 </div>
 
@@ -409,27 +385,27 @@
   <div class="modal">
     <h3>稼働日数を変更</h3>
     <div class="modal-input-row">
-      <label>日目</label>
+      <label>Day</label>
       <input type="number" class="modal-num-input" id="dayInput" min="1" max="31">
     </div>
     <div class="modal-btns">
-      <button class="modal-btn modal-btn-cancel" onclick="closeDayModal()">キャンセル</button>
-      <button class="modal-btn modal-btn-ok" onclick="saveDayFromModal()">保存</button>
+      <button class="modal-btn modal-btn-cancel" onclick="closeDayModal()">Cancel</button>
+      <button class="modal-btn modal-btn-ok" onclick="saveDayFromModal()">Save</button>
     </div>
   </div>
 </div>
 
 <div class="result-screen" id="resultScreen">
   <div class="result-header">
-    <h2>退店報告 完成</h2>
-    <button class="back-btn" onclick="closeResult()">← 戻る</button>
+    <h2>Complete</h2>
+    <button class="back-btn" onclick="closeResult()">← Back</button>
   </div>
   <div class="result-body">
     <div class="report-box" id="reportText"></div>
   </div>
   <div class="share-bar">
-    <button class="btn btn-copy" onclick="copyReport()">コピー</button>
-    <button class="btn btn-primary btn-share" onclick="shareReport()">LINEで共有</button>
+    <button class="btn btn-copy" onclick="copyReport()">Copy</button>
+    <button class="btn btn-primary" onclick="shareReport()">LINE で共有</button>
   </div>
 </div>
 
@@ -437,7 +413,7 @@
 
 <script>
 const STORAGE_KEY = 'pikara_day_data';
-const PREV_KEY = 'pikara_prev_improvement';
+const PREV_KEY    = 'pikara_prev_improvement';
 
 function getTodayStr() {
   const d = new Date();
@@ -446,40 +422,34 @@ function getTodayStr() {
 
 function getJaDate() {
   const d = new Date();
-  const days = ['日','月','火','水','木','金','土'];
-  return d.getFullYear() + '年' + (d.getMonth()+1) + '月' + d.getDate() + '日（' + days[d.getDay()] + '）';
+  const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  return (d.getMonth()+1) + ' / ' + d.getDate() + '  ' + days[d.getDay()];
 }
 
 function getDayCount() {
   const today = getTodayStr();
-  const todayMonth = today.slice(0,7);
+  const m = today.slice(0,7);
   let data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-  if (!data.month || data.month !== todayMonth) {
-    data = { month: todayMonth, lastDate: null, count: 0 };
-  }
-  if (data.lastDate === today) return data.count;
-  return data.count + 1;
+  if (!data.month || data.month !== m) data = { month: m, lastDate: null, count: 0 };
+  return data.lastDate === today ? data.count : data.count + 1;
 }
 
 function saveDayCount(count) {
   const today = getTodayStr();
-  const todayMonth = today.slice(0,7);
-  localStorage.setItem(STORAGE_KEY, JSON.stringify({ month: todayMonth, lastDate: today, count: count }));
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({ month: today.slice(0,7), lastDate: today, count }));
 }
 
-// 前日の改善を保存
 function savePrevImprovement(text, dateStr) {
-  localStorage.setItem(PREV_KEY, JSON.stringify({ text: text, date: dateStr }));
+  localStorage.setItem(PREV_KEY, JSON.stringify({ text, date: dateStr }));
 }
 
-// 前日の改善を表示
 function loadPrevImprovement() {
   const today = getTodayStr();
   try {
     const data = JSON.parse(localStorage.getItem(PREV_KEY) || 'null');
     if (!data || !data.text || data.date === today) return;
     document.getElementById('prevCardBody').textContent = data.text;
-    document.getElementById('prevCardDate').textContent = data.date.replace(/-/g, '/');
+    document.getElementById('prevCardDate').textContent = data.date.replace(/-/g,'/');
     document.getElementById('prevCard').classList.add('show');
   } catch(e) {}
 }
@@ -489,7 +459,7 @@ let currentDayCount = 1;
 function initHeader() {
   document.getElementById('dateLine').textContent = getJaDate();
   currentDayCount = getDayCount();
-  document.getElementById('dayBadgeText').textContent = currentDayCount + '日目';
+  document.getElementById('dayBadgeText').textContent = currentDayCount;
 }
 
 initHeader();
@@ -499,82 +469,67 @@ function openDayModal() {
   document.getElementById('dayInput').value = currentDayCount;
   document.getElementById('dayModal').classList.add('show');
 }
-
-function closeDayModal() {
-  document.getElementById('dayModal').classList.remove('show');
-}
-
+function closeDayModal() { document.getElementById('dayModal').classList.remove('show'); }
 function saveDayFromModal() {
   const val = parseInt(document.getElementById('dayInput').value);
-  if (!val || val < 1 || val > 31) { showToast('1〜31の数字を入力してください'); return; }
+  if (!val || val < 1 || val > 31) { showToast('1〜31の数字を入力'); return; }
   currentDayCount = val;
   saveDayCount(val);
-  document.getElementById('dayBadgeText').textContent = val + '日目';
+  document.getElementById('dayBadgeText').textContent = val;
   closeDayModal();
 }
-
 document.getElementById('dayModal').addEventListener('click', function(e) {
   if (e.target === this) closeDayModal();
 });
 
 function resetForm() {
   if (!confirm('入力内容をリセットしますか？')) return;
-  document.getElementById('store').value = '';
+  ['store','reflection','ngReason','successFactor','improvement'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
   document.getElementById('contracts').value = '0';
   document.getElementById('swing').value = '0';
-  document.getElementById('reflection').value = '';
-  document.getElementById('ngReason').value = '';
-  document.getElementById('successFactor').value = '';
-  document.getElementById('improvement').value = '';
 }
 
 function generateReport() {
-  const store = document.getElementById('store').value;
-  const contracts = parseInt(document.getElementById('contracts').value) || 0;
-  const swing = parseInt(document.getElementById('swing').value) || 0;
-  const reflection = document.getElementById('reflection').value.trim();
-  const ngReason = document.getElementById('ngReason').value.trim();
-  const successFactor = document.getElementById('successFactor').value.trim();
-  const improvement = document.getElementById('improvement').value.trim();
+  const store        = document.getElementById('store').value;
+  const contracts    = parseInt(document.getElementById('contracts').value) || 0;
+  const swing        = parseInt(document.getElementById('swing').value) || 0;
+  const reflection   = document.getElementById('reflection').value.trim();
+  const ngReason     = document.getElementById('ngReason').value.trim();
+  const successFactor= document.getElementById('successFactor').value.trim();
+  const improvement  = document.getElementById('improvement').value.trim();
 
-  if (!store) { showToast('店舗を選択してください'); return; }
+  if (!store)      { showToast('店舗を選択してください'); return; }
   if (!reflection) { showToast('振り返りを入力してください'); return; }
+  if (!ngReason)   { showToast('NG理由を入力してください'); return; }
 
-  const ngText = contracts > 0 ? 'なし' : (ngReason || 'なし');
-  const successText = contracts > 0 ? (successFactor || '（未記入）') : '';
+  const successLine = contracts > 0
+    ? '【成約要因】\n・' + (successFactor || '（未記入）') + '\n'
+    : '【成約要因】\n';
 
-  let report = 'お疲れ様です\n';
-  report += '退店報告：竹口\n';
-  report += '稼働店舗：' + store + '\n';
-  report += '稼働日数：' + currentDayCount + '日目\n';
-  report += '【結果】\n';
-  report += '・成約数：' + contracts + '\n';
-  report += '・スイング成約：' + swing + '\n';
-  report += '【振り返り（事実）】\n';
-  report += '・' + reflection + '\n';
-  report += '【NG理由】\n';
-  report += '・' + ngText + '\n';
-  if (contracts > 0) {
-    report += '【成約要因】\n';
-    report += '・' + successText + '\n';
-  }
-  report += '【改善（次やること）】\n';
-  report += '・' + (improvement || '（未記入）') + '\n';
-  report += 'お疲れ様でした。';
+  const report = [
+    'お疲れ様です',
+    '退店報告：竹口',
+    '稼働店舗：' + store,
+    '稼働日数：' + currentDayCount + '日目',
+    '【結果】',
+    '・成約数：' + contracts,
+    '・スイング成約：' + swing,
+    '【振り返り（事実）】',
+    '・' + reflection,
+    '【NG理由】',
+    '・' + ngReason,
+  ].join('\n') + '\n' + successLine +
+    '【改善（次やること）】\n・' + (improvement || '（未記入）') + '\nお疲れ様でした。';
 
   document.getElementById('reportText').textContent = report;
   document.getElementById('resultScreen').classList.add('show');
-
-  // 今日の改善を翌日用に保存
-  if (improvement) {
-    savePrevImprovement(improvement, getTodayStr());
-  }
+  if (improvement) savePrevImprovement(improvement, getTodayStr());
   saveDayCount(currentDayCount);
 }
 
-function closeResult() {
-  document.getElementById('resultScreen').classList.remove('show');
-}
+function closeResult() { document.getElementById('resultScreen').classList.remove('show'); }
 
 function copyReport() {
   const text = document.getElementById('reportText').textContent;
@@ -582,10 +537,8 @@ function copyReport() {
     navigator.clipboard.writeText(text).then(() => showToast('コピーしました'));
   } else {
     const ta = document.createElement('textarea');
-    ta.value = text;
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
+    ta.value = text; document.body.appendChild(ta);
+    ta.select(); document.execCommand('copy');
     document.body.removeChild(ta);
     showToast('コピーしました');
   }
@@ -593,18 +546,14 @@ function copyReport() {
 
 function shareReport() {
   const text = document.getElementById('reportText').textContent;
-  if (navigator.share) {
-    navigator.share({ text: text }).catch(() => {});
-  } else {
-    copyReport();
-  }
+  if (navigator.share) { navigator.share({ text }).catch(()=>{}); }
+  else { copyReport(); }
 }
 
 function showToast(msg) {
   const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2000);
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
 }
 </script>
 </body>
