@@ -5,23 +5,24 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="退店報告">
-<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' fill='%23e8e4dc'/%3E%3Crect x='24' y='24' width='132' height='132' fill='none' stroke='%231c1814' stroke-width='6'/%3E%3Cline x1='24' y1='72' x2='156' y2='72' stroke='%231c1814' stroke-width='3'/%3E%3Cline x1='24' y1='108' x2='156' y2='108' stroke='%231c1814' stroke-width='3'/%3E%3Cline x1='72' y1='24' x2='72' y2='72' stroke='%231c1814' stroke-width='3'/%3E%3Ctext x='90' y='68' font-family='Georgia,serif' font-size='32' font-weight='700' fill='%231c1814' text-anchor='middle' dominant-baseline='middle'%3E退%3C/text%3E%3Ctext x='52' y='92' font-family='Georgia,serif' font-size='11' font-weight='700' fill='%237a7268' text-anchor='middle' letter-spacing='1'%3EREPORT%3C/text%3E%3Cline x1='40' y1='126' x2='140' y2='126' stroke='%231c1814' stroke-width='2'/%3E%3Cline x1='40' y1='136' x2='120' y2='136' stroke='%23b0a898' stroke-width='2'/%3E%3C/svg%3E">
-<title>退店報告</title>
+<meta name="apple-mobile-web-app-title" content="Daily Report">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' fill='%233a6ef5'/%3E%3Crect x='36' y='44' width='108' height='14' rx='7' fill='white' opacity='0.9'/%3E%3Crect x='36' y='70' width='80' height='10' rx='5' fill='white' opacity='0.5'/%3E%3Crect x='36' y='92' width='108' height='10' rx='5' fill='white' opacity='0.5'/%3E%3Crect x='36' y='112' width='90' height='10' rx='5' fill='white' opacity='0.5'/%3E%3Crect x='36' y='132' width='60' height='10' rx='5' fill='white' opacity='0.3'/%3E%3C/svg%3E">
+<title>Daily Report</title>
 <style>
   :root {
-    --bg: #e8e4dc;
-    --surface2: #dedad2;
-    --border: #c8c2b6;
-    --border-strong: #a09890;
-    --text: #1c1814;
-    --text2: #7a7268;
-    --text3: #b0a898;
-    --yellow: #7a5e0e;
-    --yellow-bg: #ede4c8;
-    --yellow-border: #c8a84a;
+    --bg: #f2f4f8;
+    --surface: #ffffff;
+    --surface2: #eef0f6;
+    --border: #e0e4ef;
+    --accent: #3a6ef5;
+    --text: #1a1a2e;
+    --text2: #8a8aaa;
+    --success: #1faa70;
+    --yellow: #f59e0b;
+    --yellow-bg: #fffbeb;
+    --yellow-border: #fde68a;
+    --radius: 16px;
     --font: 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', sans-serif;
-    --font-serif: Georgia, 'Times New Roman', serif;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   body {
@@ -32,202 +33,195 @@
     overflow-x: hidden;
   }
 
-  /* ─── HEADER ─── */
+  /* HEADER */
   .header {
-    padding: 52px 24px 18px;
-    border-bottom: 2px solid var(--text);
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 20px 16px;
     position: sticky; top: 0; z-index: 100;
-    background: var(--bg);
+    box-shadow: 0 1px 8px rgba(0,0,0,0.05);
   }
   .header-top {
-    display: flex; align-items: flex-end;
-    justify-content: space-between; margin-bottom: 8px;
+    display: flex; align-items: center;
+    justify-content: space-between; margin-bottom: 4px;
   }
-  .header h1 {
-    font-family: var(--font-serif);
-    font-size: 22px; font-weight: 700;
-    letter-spacing: 0.14em; text-transform: uppercase;
-    color: var(--text); line-height: 1;
+  .header-left { display: flex; flex-direction: column; gap: 2px; }
+  .header-title {
+    font-size: 19px; font-weight: 800;
+    letter-spacing: 0.04em; color: var(--accent);
   }
-  .day-area { display: flex; align-items: flex-end; gap: 5px; }
-  .day-num {
-    font-family: var(--font-serif);
-    font-size: 34px; font-weight: 700;
-    color: var(--text); letter-spacing: -0.02em; line-height: 1;
+  .header-sub {
+    font-size: 10px; font-weight: 600;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--text2);
   }
-  .day-unit {
-    font-size: 11px; color: var(--text2);
-    font-weight: 500; padding-bottom: 5px; letter-spacing: 0.08em;
+  .day-badge {
+    display: flex; align-items: center; gap: 6px;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 20px; padding: 5px 10px 5px 14px;
+    font-size: 12px; color: var(--text2); font-weight: 600;
   }
   .day-edit-btn {
-    background: transparent; border: 1px solid var(--border-strong);
-    border-radius: 50%; width: 22px; height: 22px;
-    color: var(--text2); font-size: 11px; cursor: pointer;
+    background: var(--border); border: none; border-radius: 50%;
+    width: 20px; height: 20px; color: var(--text2);
+    font-size: 11px; cursor: pointer;
     display: flex; align-items: center; justify-content: center;
-    font-family: var(--font); margin-bottom: 4px;
+    font-family: var(--font);
   }
-  .date-line {
-    font-size: 11px; color: var(--text2);
-    letter-spacing: 0.12em; text-transform: uppercase;
-  }
+  .date-line { font-size: 12px; color: var(--text2); }
 
-  /* ─── MAIN ─── */
-  .main { padding: 0 0 140px; max-width: 560px; margin: 0 auto; }
+  /* MAIN */
+  .main { padding: 16px 16px 130px; max-width: 600px; margin: 0 auto; }
 
   /* 前日カード */
   .prev-card {
-    display: none; background: var(--yellow-bg);
-    border-bottom: 1px solid var(--yellow-border);
+    display: none; margin-bottom: 14px;
+    background: var(--yellow-bg); border: 1px solid var(--yellow-border);
+    border-radius: var(--radius); overflow: hidden;
   }
   .prev-card.show { display: block; }
   .prev-card-header {
-    display: flex; align-items: center; gap: 8px;
-    padding: 11px 24px; border-bottom: 1px solid var(--yellow-border);
+    display: flex; align-items: center; gap: 6px;
+    padding: 10px 14px; border-bottom: 1px solid var(--yellow-border);
   }
   .prev-card-title {
     font-size: 10px; font-weight: 700;
-    letter-spacing: 0.2em; text-transform: uppercase;
+    letter-spacing: 0.12em; text-transform: uppercase;
     color: var(--yellow); flex: 1;
   }
-  .prev-card-date { font-size: 10px; color: var(--text2); }
+  .prev-card-date { font-size: 11px; color: var(--text2); }
   .prev-card-body {
-    padding: 12px 24px 14px; font-size: 13px;
-    line-height: 1.8; color: var(--yellow);
+    padding: 10px 14px 12px; font-size: 13px;
+    line-height: 1.7; color: var(--text);
     white-space: pre-wrap; word-break: break-all;
   }
 
   /* セクション */
-  .section { border-bottom: 1px solid var(--border); }
+  .section {
+    margin-bottom: 10px; background: var(--surface);
+    border-radius: var(--radius); border: 1px solid var(--border);
+    overflow: hidden;
+  }
   .section-label {
-    display: flex; align-items: center; gap: 12px;
-    padding: 13px 24px 11px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 14px 8px; font-size: 10px; font-weight: 700;
+    letter-spacing: 0.14em; color: var(--text2);
+    text-transform: uppercase; border-bottom: 1px solid var(--border);
+    background: #fafbff;
   }
-  .section-label .num {
-    font-family: var(--font-serif); font-size: 11px;
-    font-weight: 700; color: var(--text3); width: 14px;
-  }
-  .section-label .label-text {
-    font-size: 10px; font-weight: 700;
-    letter-spacing: 0.22em; text-transform: uppercase; color: var(--text2);
+  .section-label .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent); flex-shrink: 0; opacity: 0.6;
   }
   .field-row {
     display: flex; align-items: center;
-    padding: 0 24px; border-bottom: 1px solid var(--border);
+    padding: 0 14px; border-bottom: 1px solid var(--border);
   }
   .field-row:last-child { border-bottom: none; }
 
-  input[type="text"], input[type="number"], textarea, select {
+  input[type="text"], textarea, select {
     background: transparent; border: none; outline: none;
     color: var(--text); font-family: var(--font);
     font-size: 15px; width: 100%; padding: 13px 0;
     -webkit-appearance: none;
   }
-  input[type="number"] { -moz-appearance: textfield; }
-  input[type="number"]::-webkit-inner-spin-button,
-  input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
   textarea {
-    resize: none; line-height: 1.75;
-    padding: 14px 24px; min-height: 90px;
+    resize: none; line-height: 1.65;
+    padding: 13px 14px; min-height: 84px;
     font-size: 14px; display: block; width: 100%;
   }
 
-  /* 成約カウンター */
-  .count-row { display: flex; }
-  .count-field {
-    flex: 1; display: flex; align-items: center;
-    padding: 0 24px; border-right: 1px solid var(--border);
+  /* プルダウン共通 */
+  .select-wrap { position: relative; flex: 1; }
+  .select-wrap::after {
+    content: '›'; position: absolute; right: 0; top: 50%;
+    transform: translateY(-50%) rotate(90deg);
+    color: var(--text2); font-size: 18px; pointer-events: none;
   }
-  .count-field:last-child { border-right: none; }
-  .count-label {
-    font-size: 10px; color: var(--text2); margin-right: 12px;
-    white-space: nowrap; letter-spacing: 0.12em; text-transform: uppercase;
-  }
-  .count-input {
-    width: 48px !important; text-align: center;
-    font-family: var(--font-serif) !important;
-    font-size: 32px !important; font-weight: 700;
-    color: var(--text) !important; padding: 14px 0 !important;
-  }
-
-  /* 店舗セレクト */
-  .store-select {
+  .store-select, .count-select {
     background: transparent; border: none; outline: none;
     color: var(--text); font-family: var(--font);
     font-size: 15px; width: 100%; padding: 13px 0;
     cursor: pointer; -webkit-appearance: none; appearance: none;
   }
-  .select-wrap { position: relative; flex: 1; }
-  .select-wrap::after {
-    content: '›'; position: absolute; right: 0; top: 50%;
-    transform: translateY(-50%) rotate(90deg);
-    color: var(--text2); font-size: 20px; pointer-events: none;
+  option { background: #ffffff; color: #1a1a2e; }
+
+  /* 成約・スイング行 */
+  .count-row { display: flex; }
+  .count-field {
+    flex: 1; display: flex; align-items: center;
+    padding: 0 14px; border-right: 1px solid var(--border);
   }
-  option { background: #e8e4dc; color: #1c1814; }
+  .count-field:last-child { border-right: none; }
+  .count-label {
+    font-size: 11px; color: var(--text2);
+    margin-right: 10px; white-space: nowrap;
+  }
+  .count-select {
+    font-size: 22px !important; font-weight: 700;
+    color: var(--accent) !important;
+    padding: 10px 0 !important; width: auto !important;
+    min-width: 48px;
+  }
 
   /* ボトムバー */
   .bottom-bar {
     position: fixed; bottom: 0; left: 0; right: 0;
-    padding-bottom: env(safe-area-inset-bottom);
-    display: flex; max-width: 560px; margin: 0 auto;
-    border-top: 2px solid var(--text); background: var(--bg);
+    padding: 12px 16px;
+    padding-bottom: max(14px, env(safe-area-inset-bottom));
+    background: linear-gradient(to top, var(--bg) 65%, transparent);
+    display: flex; gap: 10px;
+    max-width: 600px; margin: 0 auto;
   }
   .btn {
-    flex: 1; padding: 20px; border: none;
-    font-family: var(--font); font-size: 13px; font-weight: 700;
-    cursor: pointer; transition: opacity 0.12s, background 0.12s;
-    letter-spacing: 0.18em; text-transform: uppercase;
+    flex: 1; padding: 17px; border-radius: var(--radius);
+    border: none; font-family: var(--font);
+    font-size: 15px; font-weight: 700; cursor: pointer;
+    transition: all 0.12s; letter-spacing: 0.03em;
   }
-  .btn-primary { background: var(--text); color: var(--bg); }
-  .btn-primary:active { opacity: 0.75; }
+  .btn-primary { background: var(--accent); color: white; }
+  .btn-primary:active { transform: scale(0.97); opacity: 0.85; }
   .btn-reset {
-    background: transparent; border-right: 1px solid var(--border-strong);
-    color: var(--text2); flex: 0 0 auto; padding: 20px 24px; font-size: 12px;
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--text2); flex: 0 0 auto; padding: 17px 20px;
+    font-size: 14px;
   }
-  .btn-reset:active { background: var(--surface2); }
+  .btn-reset:active { transform: scale(0.97); }
 
   /* モーダル */
   .modal-overlay {
     display: none; position: fixed; inset: 0;
-    background: rgba(28,24,20,0.5); z-index: 300;
+    background: rgba(0,0,0,0.3); z-index: 300;
     align-items: center; justify-content: center;
-    backdrop-filter: blur(6px);
+    backdrop-filter: blur(4px);
   }
   .modal-overlay.show { display: flex; }
   .modal {
-    background: var(--bg); border: 2px solid var(--text);
-    padding: 28px; width: calc(100% - 48px); max-width: 300px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 24px;
+    width: calc(100% - 48px); max-width: 300px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.12);
   }
-  .modal h3 {
-    font-size: 11px; font-weight: 700;
-    letter-spacing: 0.2em; text-transform: uppercase;
-    color: var(--text2); margin-bottom: 24px;
-  }
-  .modal-input-row {
-    display: flex; align-items: center; gap: 14px; margin-bottom: 24px;
-  }
-  .modal-input-row label {
-    font-size: 11px; color: var(--text2);
-    white-space: nowrap; letter-spacing: 0.1em; text-transform: uppercase;
-  }
+  .modal h3 { font-size: 14px; font-weight: 700; margin-bottom: 16px; color: var(--text); }
+  .modal-input-row { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+  .modal-input-row label { font-size: 13px; color: var(--text2); white-space: nowrap; }
   .modal-num-input {
-    background: var(--surface2) !important;
-    border: 1px solid var(--border-strong) !important;
-    padding: 10px 14px !important;
-    font-family: var(--font-serif) !important;
-    font-size: 26px !important; font-weight: 700 !important;
-    color: var(--text) !important; text-align: center; width: 80px !important;
+    background: var(--surface2) !important; border: 1px solid var(--border) !important;
+    border-radius: 8px !important; padding: 10px 14px !important;
+    font-size: 20px !important; font-weight: 700 !important;
+    color: var(--accent) !important; text-align: center; width: 80px !important;
+    -moz-appearance: textfield;
   }
-  .modal-btns { display: flex; border: 1px solid var(--text); }
+  .modal-num-input::-webkit-inner-spin-button,
+  .modal-num-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+  .modal-btns { display: flex; gap: 8px; }
   .modal-btn {
-    flex: 1; padding: 14px; border: none; font-family: var(--font);
-    font-size: 12px; font-weight: 700; cursor: pointer;
-    letter-spacing: 0.14em; text-transform: uppercase;
+    flex: 1; padding: 12px; border-radius: 10px;
+    border: none; font-family: var(--font);
+    font-size: 14px; font-weight: 700; cursor: pointer;
   }
-  .modal-btn-cancel {
-    background: transparent; color: var(--text2);
-    border-right: 1px solid var(--text);
-  }
-  .modal-btn-ok { background: var(--text); color: var(--bg); }
+  .modal-btn-cancel { background: var(--surface2); border: 1px solid var(--border); color: var(--text2); }
+  .modal-btn-ok { background: var(--accent); color: white; }
 
   /* 結果画面 */
   .result-screen {
@@ -236,50 +230,56 @@
   }
   .result-screen.show { display: block; }
   .result-header {
-    background: var(--bg); border-bottom: 2px solid var(--text);
-    padding: 52px 24px 18px; position: sticky; top: 0;
-    display: flex; align-items: flex-end; justify-content: space-between;
+    background: var(--surface); border-bottom: 1px solid var(--border);
+    padding: 20px 16px 16px; position: sticky; top: 0;
+    display: flex; align-items: center; justify-content: space-between;
+    box-shadow: 0 1px 8px rgba(0,0,0,0.05);
   }
   .result-header h2 {
-    font-family: var(--font-serif); font-size: 20px; font-weight: 700;
-    letter-spacing: 0.12em; text-transform: uppercase; color: var(--text);
+    font-size: 16px; font-weight: 700; color: var(--success);
+    letter-spacing: 0.04em;
   }
   .back-btn {
-    background: transparent; border: 1px solid var(--border-strong);
-    padding: 7px 16px; font-size: 11px; color: var(--text2);
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 20px; padding: 6px 14px;
+    font-size: 13px; color: var(--text2);
     cursor: pointer; font-family: var(--font);
-    letter-spacing: 0.12em; text-transform: uppercase; font-weight: 600;
   }
-  .result-body { padding: 0 0 120px; }
+  .result-body { padding: 16px 16px 110px; max-width: 600px; margin: 0 auto; }
   .report-box {
-    padding: 24px; font-size: 14px; line-height: 2;
-    white-space: pre-wrap; color: var(--text);
-    word-break: break-all; border-bottom: 1px solid var(--border);
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 18px;
+    font-size: 14px; line-height: 1.9;
+    white-space: pre-wrap; color: var(--text); word-break: break-all;
   }
   .share-bar {
     position: fixed; bottom: 0; left: 0; right: 0;
-    padding-bottom: env(safe-area-inset-bottom);
-    display: flex; max-width: 560px; margin: 0 auto;
-    border-top: 2px solid var(--text); background: var(--bg);
+    padding: 12px 16px;
+    padding-bottom: max(14px, env(safe-area-inset-bottom));
+    background: linear-gradient(to top, var(--bg) 65%, transparent);
+    display: flex; gap: 10px;
+    max-width: 600px; margin: 0 auto;
+  }
+  .btn-line {
+    background: #06c755; color: white;
   }
   .btn-copy {
-    background: transparent; border-right: 1px solid var(--border-strong);
-    color: var(--text2); flex: 0 0 auto; padding: 20px 24px; font-size: 12px;
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--text); flex: 0 0 auto; padding: 17px 20px;
   }
 
   /* トースト */
   .toast {
     position: fixed; top: 20px; left: 50%;
     transform: translateX(-50%) translateY(-80px);
-    background: var(--text); color: var(--bg);
-    padding: 10px 22px; font-size: 12px; font-weight: 700;
-    letter-spacing: 0.12em; text-transform: uppercase;
-    z-index: 400;
-    transition: transform 0.28s cubic-bezier(0.34,1.56,0.64,1);
+    background: var(--text); color: white;
+    padding: 10px 20px; border-radius: 20px;
+    font-size: 13px; font-weight: 600; z-index: 400;
+    transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
     white-space: nowrap;
   }
   .toast.show { transform: translateX(-50%) translateY(0); }
-  ::placeholder { color: var(--text3); }
+  ::placeholder { color: var(--text2); opacity: 0.5; }
   input:focus, textarea:focus, select:focus { outline: none; }
 </style>
 </head>
@@ -287,10 +287,12 @@
 
 <div class="header">
   <div class="header-top">
-    <h1>退店報告</h1>
-    <div class="day-area">
-      <span class="day-num" id="dayBadgeText">—</span>
-      <span class="day-unit">日目</span>
+    <div class="header-left">
+      <div class="header-title">Daily Report</div>
+      <div class="header-sub">竹口 / ピカラ光</div>
+    </div>
+    <div class="day-badge">
+      <span id="dayBadgeText">— 日目</span>
       <button class="day-edit-btn" onclick="openDayModal()">✎</button>
     </div>
   </div>
@@ -301,21 +303,18 @@
 
   <div class="prev-card" id="prevCard">
     <div class="prev-card-header">
-      <span class="prev-card-title">前日の改善</span>
+      <span class="prev-card-title">📌 前日の改善</span>
       <span class="prev-card-date" id="prevCardDate"></span>
     </div>
     <div class="prev-card-body" id="prevCardBody"></div>
   </div>
 
   <div class="section">
-    <div class="section-label">
-      <span class="num">I</span>
-      <span class="label-text">稼働店舗</span>
-    </div>
+    <div class="section-label"><span class="dot"></span>稼働店舗</div>
     <div class="field-row">
       <div class="select-wrap">
         <select class="store-select" id="store">
-          <option value="">Select</option>
+          <option value="">選択してください</option>
           <option value="沖浜店">沖浜店</option>
           <option value="阿南店">阿南店</option>
           <option value="藍住店">藍住店</option>
@@ -326,58 +325,71 @@
   </div>
 
   <div class="section">
-    <div class="section-label">
-      <span class="num">II</span>
-      <span class="label-text">成約 / スイング</span>
-    </div>
+    <div class="section-label"><span class="dot"></span>成約 / スイング</div>
     <div class="count-row">
       <div class="count-field">
         <span class="count-label">成約</span>
-        <input type="number" class="count-input" id="contracts" value="0" min="0">
+        <div class="select-wrap">
+          <select class="count-select" id="contracts">
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+          </select>
+        </div>
       </div>
       <div class="count-field">
         <span class="count-label">スイング</span>
-        <input type="number" class="count-input" id="swing" value="0" min="0">
+        <div class="select-wrap">
+          <select class="count-select" id="swing">
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+          </select>
+        </div>
       </div>
     </div>
   </div>
 
   <div class="section">
-    <div class="section-label">
-      <span class="num">III</span>
-      <span class="label-text">振り返り（事実）</span>
-    </div>
+    <div class="section-label"><span class="dot"></span>振り返り（事実）</div>
     <textarea id="reflection" rows="4" placeholder="当日の行動全体・前日を踏まえて実施したことを簡潔に"></textarea>
   </div>
 
   <div class="section">
-    <div class="section-label">
-      <span class="num">IV</span>
-      <span class="label-text">NG理由</span>
-    </div>
+    <div class="section-label"><span class="dot"></span>NG理由</div>
     <textarea id="ngReason" rows="3" placeholder="成約がある場合は「なし」と入力"></textarea>
   </div>
 
   <div class="section">
-    <div class="section-label">
-      <span class="num">V</span>
-      <span class="label-text">成約要因</span>
-    </div>
+    <div class="section-label"><span class="dot"></span>成約要因</div>
     <textarea id="successFactor" rows="3" placeholder="成約がある日のみ記入（0件の日は空欄可）"></textarea>
   </div>
 
   <div class="section">
-    <div class="section-label">
-      <span class="num">VI</span>
-      <span class="label-text">改善（次やること）</span>
-    </div>
+    <div class="section-label"><span class="dot"></span>改善（次やること）</div>
     <textarea id="improvement" rows="3" placeholder="実施結果の評価・次の改善案"></textarea>
   </div>
 
 </div>
 
 <div class="bottom-bar">
-  <button class="btn btn-reset" onclick="resetForm()">Reset</button>
+  <button class="btn btn-reset" onclick="resetForm()">リセット</button>
   <button class="btn btn-primary" onclick="generateReport()">報告を作成</button>
 </div>
 
@@ -385,27 +397,27 @@
   <div class="modal">
     <h3>稼働日数を変更</h3>
     <div class="modal-input-row">
-      <label>Day</label>
+      <label>日目</label>
       <input type="number" class="modal-num-input" id="dayInput" min="1" max="31">
     </div>
     <div class="modal-btns">
-      <button class="modal-btn modal-btn-cancel" onclick="closeDayModal()">Cancel</button>
-      <button class="modal-btn modal-btn-ok" onclick="saveDayFromModal()">Save</button>
+      <button class="modal-btn modal-btn-cancel" onclick="closeDayModal()">キャンセル</button>
+      <button class="modal-btn modal-btn-ok" onclick="saveDayFromModal()">保存</button>
     </div>
   </div>
 </div>
 
 <div class="result-screen" id="resultScreen">
   <div class="result-header">
-    <h2>Complete</h2>
-    <button class="back-btn" onclick="closeResult()">← Back</button>
+    <h2>報告完成 ✓</h2>
+    <button class="back-btn" onclick="closeResult()">← 戻る</button>
   </div>
   <div class="result-body">
     <div class="report-box" id="reportText"></div>
   </div>
   <div class="share-bar">
-    <button class="btn btn-copy" onclick="copyReport()">Copy</button>
-    <button class="btn btn-primary" onclick="shareReport()">LINE で共有</button>
+    <button class="btn btn-copy" onclick="copyReport()">コピー</button>
+    <button class="btn btn-line" onclick="shareReport()">LINEで共有</button>
   </div>
 </div>
 
@@ -422,8 +434,8 @@ function getTodayStr() {
 
 function getJaDate() {
   const d = new Date();
-  const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  return (d.getMonth()+1) + ' / ' + d.getDate() + '  ' + days[d.getDay()];
+  const days = ['日','月','火','水','木','金','土'];
+  return d.getFullYear() + '年' + (d.getMonth()+1) + '月' + d.getDate() + '日（' + days[d.getDay()] + '）';
 }
 
 function getDayCount() {
@@ -459,7 +471,7 @@ let currentDayCount = 1;
 function initHeader() {
   document.getElementById('dateLine').textContent = getJaDate();
   currentDayCount = getDayCount();
-  document.getElementById('dayBadgeText').textContent = currentDayCount;
+  document.getElementById('dayBadgeText').textContent = currentDayCount + '日目';
 }
 
 initHeader();
@@ -472,10 +484,10 @@ function openDayModal() {
 function closeDayModal() { document.getElementById('dayModal').classList.remove('show'); }
 function saveDayFromModal() {
   const val = parseInt(document.getElementById('dayInput').value);
-  if (!val || val < 1 || val > 31) { showToast('1〜31の数字を入力'); return; }
+  if (!val || val < 1 || val > 31) { showToast('1〜31の数字を入力してください'); return; }
   currentDayCount = val;
   saveDayCount(val);
-  document.getElementById('dayBadgeText').textContent = val;
+  document.getElementById('dayBadgeText').textContent = val + '日目';
   closeDayModal();
 }
 document.getElementById('dayModal').addEventListener('click', function(e) {
@@ -484,21 +496,23 @@ document.getElementById('dayModal').addEventListener('click', function(e) {
 
 function resetForm() {
   if (!confirm('入力内容をリセットしますか？')) return;
-  ['store','reflection','ngReason','successFactor','improvement'].forEach(id => {
-    document.getElementById(id).value = '';
-  });
+  document.getElementById('store').value = '';
   document.getElementById('contracts').value = '0';
   document.getElementById('swing').value = '0';
+  document.getElementById('reflection').value = '';
+  document.getElementById('ngReason').value = '';
+  document.getElementById('successFactor').value = '';
+  document.getElementById('improvement').value = '';
 }
 
 function generateReport() {
-  const store        = document.getElementById('store').value;
-  const contracts    = parseInt(document.getElementById('contracts').value) || 0;
-  const swing        = parseInt(document.getElementById('swing').value) || 0;
-  const reflection   = document.getElementById('reflection').value.trim();
-  const ngReason     = document.getElementById('ngReason').value.trim();
-  const successFactor= document.getElementById('successFactor').value.trim();
-  const improvement  = document.getElementById('improvement').value.trim();
+  const store         = document.getElementById('store').value;
+  const contracts     = parseInt(document.getElementById('contracts').value) || 0;
+  const swing         = parseInt(document.getElementById('swing').value) || 0;
+  const reflection    = document.getElementById('reflection').value.trim();
+  const ngReason      = document.getElementById('ngReason').value.trim();
+  const successFactor = document.getElementById('successFactor').value.trim();
+  const improvement   = document.getElementById('improvement').value.trim();
 
   if (!store)      { showToast('店舗を選択してください'); return; }
   if (!reflection) { showToast('振り返りを入力してください'); return; }
@@ -508,20 +522,22 @@ function generateReport() {
     ? '【成約要因】\n・' + (successFactor || '（未記入）') + '\n'
     : '【成約要因】\n';
 
-  const report = [
-    'お疲れ様です',
-    '退店報告：竹口',
-    '稼働店舗：' + store,
-    '稼働日数：' + currentDayCount + '日目',
-    '【結果】',
-    '・成約数：' + contracts,
-    '・スイング成約：' + swing,
-    '【振り返り（事実）】',
-    '・' + reflection,
-    '【NG理由】',
-    '・' + ngReason,
-  ].join('\n') + '\n' + successLine +
-    '【改善（次やること）】\n・' + (improvement || '（未記入）') + '\nお疲れ様でした。';
+  const report =
+    'お疲れ様です\n' +
+    '退店報告：竹口\n' +
+    '稼働店舗：' + store + '\n' +
+    '稼働日数：' + currentDayCount + '日目\n' +
+    '【結果】\n' +
+    '・成約数：' + contracts + '\n' +
+    '・スイング成約：' + swing + '\n' +
+    '【振り返り（事実）】\n' +
+    '・' + reflection + '\n' +
+    '【NG理由】\n' +
+    '・' + ngReason + '\n' +
+    successLine +
+    '【改善（次やること）】\n' +
+    '・' + (improvement || '（未記入）') + '\n' +
+    'お疲れ様でした。';
 
   document.getElementById('reportText').textContent = report;
   document.getElementById('resultScreen').classList.add('show');
@@ -539,8 +555,7 @@ function copyReport() {
     const ta = document.createElement('textarea');
     ta.value = text; document.body.appendChild(ta);
     ta.select(); document.execCommand('copy');
-    document.body.removeChild(ta);
-    showToast('コピーしました');
+    document.body.removeChild(ta); showToast('コピーしました');
   }
 }
 
